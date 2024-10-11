@@ -30,7 +30,9 @@ SECRET_KEY = 'django-insecure-c_zc(_#b%@)3js@+sd@4a^-c(7*@^mrrv0pc-8$n-1da=5d96d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
-# CSRF_TRUSTED_ORIGINS = ['https://smart-care-rg0p.onrender.com']
+CSRF_TRUSTED_ORIGINS = [
+    'https://myhotel-owvc.onrender.com',
+]
 
 
 
