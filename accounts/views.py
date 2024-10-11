@@ -37,7 +37,7 @@ class UserRegistrationView(generics.CreateAPIView):
             print("robiul")
 
             # Build the activation link
-            activation_link = f"http://127.0.0.1:8000/user/active/{uid}/{token}"
+            activation_link = f"https://myhotel-owvc.onrender.com/user/active/{uid}/{token}"
             print(activation_link)
 
             # Send verification email
