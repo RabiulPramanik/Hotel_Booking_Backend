@@ -34,12 +34,13 @@ class UserModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserModel
-        fields = ['id', 'user', 'profile_image']
+        fields = ['id', 'user', 'profile_image', 'balance']
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
         user = UserSerializer.create(UserSerializer(), validated_data=user_data)
         user_profile = UserModel.objects.create(user=user, **validated_data)
+
         return user_profile
 
 class LoginSerializer(serializers.Serializer):
