@@ -11,6 +11,7 @@ from .serializers import UserModelSerializer, LoginSerializer
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -87,7 +88,18 @@ class LoginView(views.APIView):
         return Response(serializers.errors)
     
 class LogoutView(views.APIView):
+    permission_classes = [IsAuthenticated]  # Ensure user is authenticated before logging out
+
     def get(self, request):
-        request.user.auth_token.delete()
+        try:
+            # Attempt to delete the user's auth token
+            request.user.auth_token.delete()
+        except Token.DoesNotExist:
+            # If the token doesn't exist, return an appropriate response
+            return Response({'error': 'Token not found or already deleted.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Logout the user
         logout(request)
-        return redirect('login')
+        
+        # Redirect to the login page after logging out
+        return Response({'message': 'Logged out successfully.'}, status=status.HTTP_200_OK)
