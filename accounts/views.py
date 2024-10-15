@@ -96,7 +96,7 @@ class LoginView(views.APIView):
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class LogoutView(views.APIView):
-    permission_classes = [IsAuthenticated]  # Ensure user is authenticated before logging out
+    # permission_classes = [IsAuthenticated]  # Ensure user is authenticated before logging out
 
     def get(self, request):
         try:

@@ -31,12 +31,12 @@ class BookingListView(generics.ListAPIView):
 class BookingCreateView(generics.CreateAPIView):
     queryset = BookingModel.objects.all()
     serializer_class = BookingCreateSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
 class ReviewCreateView(generics.CreateAPIView):
     queryset = ReviewModel.objects.all()
     serializer_class = ReviewCreateSerializer
-    permission_classes = [permissions.IsAuthenticated] 
+    # permission_classes = [permissions.IsAuthenticated] 
 
 class ReviewListView(generics.ListAPIView):
     queryset = ReviewModel.objects.all()
@@ -60,7 +60,7 @@ class ReviewListView(generics.ListAPIView):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = ReviewModel.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save()
