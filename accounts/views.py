@@ -69,23 +69,31 @@ def activate(request, uid64, token):
 
 
     
+
 class LoginView(views.APIView):
     def post(self, request):
-        serializers = LoginSerializer(data = request.data)
+        serializers = LoginSerializer(data=request.data)
         if serializers.is_valid():
             username = serializers.validated_data['username']
             password = serializers.validated_data['password']
 
-            user = authenticate(username = username, password = password)
+            user = authenticate(username=username, password=password)
             if user:
+                # Create or retrieve the token
                 token, _ = Token.objects.get_or_create(user=user)
-                print(token)
-                print(_)
+
+                # Log the user in (create session)
                 login(request, user)
-                return Response({'token' : token.key, 'user_id' : user.id})
+
+                # Return token and user info
+                return Response({
+                    'token': token.key,
+                    'user_id': user.id,
+                    'username': user.username,
+                }, status=status.HTTP_200_OK)
             else:
-                return Response({'error' : "Invalid Credential"})
-        return Response(serializers.errors)
+                return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class LogoutView(views.APIView):
     permission_classes = [IsAuthenticated]  # Ensure user is authenticated before logging out
