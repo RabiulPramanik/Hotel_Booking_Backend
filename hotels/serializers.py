@@ -43,91 +43,26 @@ class RoomModelSerializer(serializers.ModelSerializer):
             'price'
         ]
 
-class BookingModelSerializer(serializers.ModelSerializer):
-    user = UserModelSerializer() 
-    room = RoomModelSerializer()
-
+class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookingModel
-        fields = [
-            'id',
-            'user',
-            'room',
-            'first_name',
-            'last_name',
-            'email',
-            'phone_number',
-            'NID_number',
-            'check_in',
-            'check_out',
-            'booking_type',
-        ]
+        fields = ['id', 'user', 'room', 'first_name', 'last_name', 'email', 'phone_number', 'NID_number', 'check_in', 'check_out', 'booking_type']
 
-class BookingCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookingModel
-        fields = [
-            'room',
-            'first_name',
-            'last_name',
-            'email',
-            'phone_number',
-            'NID_number',
-            'check_in',
-            'check_out',
-        ]
-    
-    def validate(self, data):
-        # Check if check-in date is earlier than check-out date
-        if data['check_in'] > data['check_out']:
-            raise serializers.ValidationError("Check-in date must be earlier than check-out date.")
-        return data
-    
     def create(self, validated_data):
-        request = self.context.get('request')
-        user = request.user.account
-
-        booking = BookingModel.objects.create(user = user, booking_type = 'Upcoming', **validated_data)
+        booking = BookingModel.objects.create(**validated_data)
+        booking.save()
         return booking
-    
-
-class ReviewCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReviewModel
-        fields = [
-            'hotel',
-            'description',
-            'rating',
-        ]
-
-    def create(self, validated_data):
-        request = self.context.get('request')
-        user = request.user.account
-
-        # Create the review for the specified hotel
-        review = ReviewModel.objects.create(user=user, **validated_data)
-
-        hotel = review.hotel
-        rating = len(review.rating)
-        new_rating = (hotel.rating + rating)/2
-        hotel.rating = round(new_rating)
-        hotel.save()
-
-        return review
-
-class ReviewListSerializer(serializers.ModelSerializer):
-    user = UserModelSerializer()
-    hotel = HotelModelSerializer()
-
-    class Meta:
-       model = ReviewModel
-       fields = ['id', 'user', 'hotel', 'description', 'rating',] 
-
-# class ReviewSerializer(serializers.ModelSerializer):
-#     class Meta:
-#        model = ReviewModel
-#        fields = ['id', 'user', 'hotel', 'description', 'rating',] 
-
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
+        instance.NID_number = validated_data.get('NID_number', instance.NID_number)
+        instance.check_in = validated_data.get('check_in', instance.check_in)
+        instance.check_out = validated_data.get('check_out', instance.check_out)
+        instance.booking_type = validated_data.get('booking_type', instance.booking_type)
+        instance.save()
+        return instance
 
 
 class ReviewSerializer(serializers.ModelSerializer):
